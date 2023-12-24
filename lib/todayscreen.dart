@@ -172,6 +172,73 @@ class _TodayScreenState extends State<TodayScreen> {
     }
   }
 
+  Future<void> undoCheckInOut() async {
+    try {
+      QuerySnapshot employeeQuery = await FirebaseFirestore.instance
+          .collection("Employee")
+          .where('id', isEqualTo: User.employeeId)
+          .get();
+
+      if (employeeQuery.docs.isNotEmpty) {
+        DocumentSnapshot employeeDoc = employeeQuery.docs.first;
+        String recordDate = DateFormat('dd MMMM yyyy').format(DateTime.now());
+
+        DocumentReference recordRef = FirebaseFirestore.instance
+            .collection("Employee")
+            .doc(employeeDoc.id)
+            .collection("Record")
+            .doc(recordDate);
+
+        DocumentSnapshot recordSnapshot = await recordRef.get();
+
+        if (recordSnapshot.exists) {
+          // Record for the current date exists, determine the action to undo
+          String checkInTime = recordSnapshot['checkIn'];
+          String checkOutTime = recordSnapshot['checkOut'];
+
+          if (checkOutTime == "--/--") {
+            // Undo check-in
+            await recordRef.delete();
+            setState(() {
+              checkIn = "--/--";
+            });
+            showUndoSnackBar('Check-in has been undone');
+          } else {
+            // Undo check-out
+            await recordRef.update({
+              'checkOut': "--/--",
+              'checkOutLocation': "",
+            });
+            setState(() {
+              checkOut = "--/--";
+            });
+            showUndoSnackBar('Check-out has been undone');
+          }
+        } else {
+          // No record for the current date
+          showUndoSnackBar('No check-in or check-out to undo for today');
+        }
+      }
+    } catch (e) {
+      print('Error undoing check-in/out: $e');
+      // Handle error...
+    }
+  }
+
+  void showUndoSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            // Perform any additional action if needed
+          },
+        ),
+      ),
+    );
+  }
+
   void _getLocation() async {
     List<Placemark> placemark =
         await placemarkFromCoordinates(User.lat, User.long);
@@ -526,19 +593,18 @@ class _TodayScreenState extends State<TodayScreen> {
                 ),
           BlocBuilder<IsSelectedCubit, bool>(builder: (context, isSelected) {
             return isSelected == true
-                ? ElevatedButton(
-                    onPressed: null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, // Background color
-                      foregroundColor: Colors.white, // Text color
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10), // Padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(8.0), // Rounded corners
-                      ),
-                    ),
-                    child: const Text("Undo My Action"),
+                ? TextButton.icon(
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(
+                            const Color(0xffef444c))),
+                    onPressed: isSelected == false
+                        ? null
+                        : () async {
+                            // Undo action logic goes here
+                            await undoCheckInOut();
+                          },
+                    label: const Text("Undo My Action"),
+                    icon: const Icon(Icons.restore),
                   )
                 : const SizedBox();
           }),

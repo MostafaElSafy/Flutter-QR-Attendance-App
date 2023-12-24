@@ -1,11 +1,14 @@
 import 'package:attendancesys/homescreen.dart';
+import 'package:attendancesys/is_selected_cubit.dart'; // Import the IsSelectedCubit
 import 'package:attendancesys/loginscreen.dart';
 import 'package:attendancesys/model/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
 
 class AuthCheck extends StatefulWidget {
   const AuthCheck({Key? key}) : super(key: key);
+
   @override
   _AuthCheckState createState() => _AuthCheckState();
 }
@@ -70,6 +74,12 @@ class _AuthCheckState extends State<AuthCheck> {
 
   @override
   Widget build(BuildContext context) {
-    return userAvailable ? const HomeScreen() : const LoginScreen();
+    return userAvailable
+        ? BlocProvider(
+            create: (context) =>
+                IsSelectedCubit(), // Provide IsSelectedCubit here
+            child: const HomeScreen(),
+          )
+        : const LoginScreen();
   }
 }

@@ -1,10 +1,12 @@
-import 'package:attendanceapp/calendarscreen.dart';
-import 'package:attendanceapp/model/user.dart';
-import 'package:attendanceapp/profilescreen.dart';
-import 'package:attendanceapp/services/location_service.dart';
-import 'package:attendanceapp/todayscreen.dart';
+import 'package:attendancesys/calendarscreen.dart';
+import 'package:attendancesys/is_selected_cubit.dart';
+import 'package:attendancesys/model/user.dart';
+import 'package:attendancesys/profilescreen.dart';
+import 'package:attendancesys/services/location_service.dart';
+import 'package:attendancesys/todayscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -87,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
@@ -97,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: currentIndex,
         children: [
           new CalendarScreen(),
-          new TodayScreen(),
+          BlocProvider(create: (context) => IsSelectedCubit(),child: const TodayScreen()),
           new ProfileScreen(),
         ],
       ),

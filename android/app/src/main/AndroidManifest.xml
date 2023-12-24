@@ -1,7 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bytx.attendanceapp">
-   <application
-        android:label="attendanceapp"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:label="attendancesys"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

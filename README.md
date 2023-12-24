@@ -1,13 +1,16 @@
+# attendancesys
 
-## Overview
+A new Flutter project.
 
-The Flutter QR Attendance App is a mobile application developed using Flutter, designed to streamline the attendance marking process for employees. The app allows users to mark attendance using QR codes or by sliding a location-based slider within the company premises.
+## Getting Started
 
-## Features
+This project is a starting point for a Flutter application.
 
-- **QR Code Attendance:** Scan QR codes to mark attendance for each employee.
-- **Location-Based Attendance:** Mark attendance by sliding a slider within the company location.
-- **User Authentication:** Ensure only authorized personnel can mark attendance.
-- **Backend Integration:** Communicate with a backend server to store and manage employee data and attendance records.
-- **Cross-Platform:** Build and run the app seamlessly on both iOS and Android platforms.
+A few resources to get you started if this is your first Flutter project:
 
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

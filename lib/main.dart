@@ -1,16 +1,16 @@
-import 'package:attendanceapp/homescreen.dart';
-import 'package:attendanceapp/loginscreen.dart';
-import 'package:attendanceapp/model/user.dart';
+import 'package:attendancesys/homescreen.dart';
+import 'package:attendancesys/loginscreen.dart';
+import 'package:attendancesys/model/user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
 
 class AuthCheck extends StatefulWidget {
   const AuthCheck({Key? key}) : super(key: key);
-
   @override
   _AuthCheckState createState() => _AuthCheckState();
 }
@@ -49,7 +48,6 @@ class _AuthCheckState extends State<AuthCheck> {
   @override
   void initState() {
     super.initState();
-
     _getCurrentUser();
   }
 
@@ -57,13 +55,13 @@ class _AuthCheckState extends State<AuthCheck> {
     sharedPreferences = await SharedPreferences.getInstance();
 
     try {
-      if(sharedPreferences.getString('employeeId') != null) {
+      if (sharedPreferences.getString('employeeId') != null) {
         setState(() {
           User.employeeId = sharedPreferences.getString('employeeId')!;
           userAvailable = true;
         });
       }
-    } catch(e) {
+    } catch (e) {
       setState(() {
         userAvailable = false;
       });

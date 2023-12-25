@@ -608,11 +608,13 @@ class _TodayScreenState extends State<TodayScreen> {
                   )
                 : const SizedBox();
           }),
-          location != " "
-              ? Text(
-                  "Location: $location",
-                )
-              : const SizedBox(),
+          Container(
+            margin: const EdgeInsets.only(
+                bottom: 20), // Adjust the top margin as needed
+            child: location != " "
+                ? Text("Location: $location")
+                : const SizedBox(),
+          ),
           GestureDetector(
             onTap: () {
               scanQRandCheck();

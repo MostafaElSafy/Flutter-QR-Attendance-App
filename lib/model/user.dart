@@ -9,4 +9,6 @@ class User {
   static double lat = 0;
   static double long = 0;
   static bool canEdit = true;
+  static double corehours = 0;
+  static double salary = 0;
 }

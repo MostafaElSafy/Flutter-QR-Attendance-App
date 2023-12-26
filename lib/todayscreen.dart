@@ -172,6 +172,96 @@ class _TodayScreenState extends State<TodayScreen> {
     }
   }
 
+  Future<void> calculateAndSaveCoreHours() async {
+  try {
+    QuerySnapshot employeeQuery = await FirebaseFirestore.instance
+        .collection("Employee")
+        .where('id', isEqualTo: User.employeeId)
+        .get();
+
+    if (employeeQuery.docs.isNotEmpty) {
+      DocumentSnapshot employeeDoc = employeeQuery.docs.first;
+      String recordDate = DateFormat('dd MMMM yyyy').format(DateTime.now());
+
+      DocumentReference recordRef = FirebaseFirestore.instance
+          .collection("Employee")
+          .doc(employeeDoc.id)
+          .collection("Record")
+          .doc(recordDate);
+
+      DocumentSnapshot recordSnapshot = await recordRef.get();
+
+      if (recordSnapshot.exists) {
+        String checkInTime = recordSnapshot['checkIn'];
+        String checkOutTime = recordSnapshot['checkOut'];
+
+        if (checkOutTime != "--/--") {
+          // Both check-in and check-out are available, calculate core hours
+          DateTime checkInDateTime = DateFormat('hh:mm').parse(checkInTime);
+          DateTime checkOutDateTime = DateFormat('hh:mm').parse(checkOutTime);
+
+          Duration coreHoursDuration = checkOutDateTime.difference(checkInDateTime);
+
+          // Convert duration to hours and minutes
+          int coreHours = coreHoursDuration.inHours;
+          int coreMinutes = (coreHoursDuration.inMinutes - (coreHours * 60));
+
+          // Update Firestore with core hours in Record subcollection
+          await recordRef.update({
+            'coreHours': '$coreHours:$coreMinutes',
+          });
+
+          //salaries
+          if(employeeDoc['coreHours'] !="0" || employeeDoc['coreMinutes'] !="0"){
+              // Subtract core hours in Employee collection
+              int currentEmployeeCoreHours = int.parse(employeeDoc['coreHours']);
+              int currentEmployeeCoreMinutes = int.parse(employeeDoc['coreMinutes']);
+
+              int updatedEmployeeCoreHours = currentEmployeeCoreHours - coreHours;
+              int updatedEmployeeCoreMinutes = currentEmployeeCoreMinutes - coreMinutes;
+
+              
+              await FirebaseFirestore.instance
+                  .collection("Employee")
+                  .doc(employeeDoc.id)
+                  .update({
+                'coreHours': "$updatedEmployeeCoreHours",
+                'coreMinutes': "$updatedEmployeeCoreMinutes",
+              });
+          }
+          else{
+            try {
+                  // Assuming you want to add bonus hours and minutes
+                  int bonusHours = coreHours;
+                  int bonusMinutes = coreMinutes;
+
+                  // Assuming bonus salary is 100 for each bonus hour
+                  int bonusSalary = bonusHours * 100;
+
+                  // Update 'Employee' collection with bonus hours, bonus minutes, and bonus salary
+                  await FirebaseFirestore.instance
+                      .collection("Employee")
+                      .doc(employeeDoc.id)
+                      .update({
+                        'bonusHours': FieldValue.increment(bonusHours),
+                        'bonusMinutes': FieldValue.increment(bonusMinutes),
+                        'salary': FieldValue.increment(bonusSalary),
+                      });
+                } catch (e) {
+                  print('Error updating bonus hours, minutes, and salary: $e');
+                  // Handle error...
+                }
+          }
+         
+        }
+      }
+    }
+  } catch (e) {
+    print('Error calculating and saving core hours: $e');
+    // Handle error...
+  }
+}
+
   Future<void> undoCheckInOut() async {
     try {
       QuerySnapshot employeeQuery = await FirebaseFirestore.instance
@@ -248,6 +338,7 @@ class _TodayScreenState extends State<TodayScreen> {
           "${placemark[0].street}, ${placemark[0].administrativeArea}, ${placemark[0].postalCode}, ${placemark[0].country}";
     });
   }
+
 
   void _getRecord() async {
     try {
@@ -431,152 +522,143 @@ class _TodayScreenState extends State<TodayScreen> {
                       final GlobalKey<SlideActionState> key = GlobalKey();
 
                       return SlideAction(
-                        text: checkIn == "--/--"
-                            ? "Slide to Check In"
-                            : "Slide to Check Out",
-                        textStyle: TextStyle(
-                          color: Colors.black54,
-                          fontSize: screenWidth / 20,
-                          fontFamily: "NexaRegular",
-                        ),
-                        outerColor: Colors.white,
-                        innerColor: primary,
-                        key: key,
-                        onSubmit: () async {
-                          BlocProvider.of<IsSelectedCubit>(context)
-                              .chengeSelected(true);
-                          Future.delayed(
-                              const Duration(seconds: 5),
-                              () => BlocProvider.of<IsSelectedCubit>(context)
-                                  .chengeSelected(false));
+                      text: checkIn == "--/--" ? "Slide to Check In" : "Slide to Check Out",
+                      textStyle: TextStyle(
+                        color: Colors.black54,
+                        fontSize: screenWidth / 20,
+                        fontFamily: "NexaRegular",
+                      ),
+                      outerColor: Colors.white,
+                      innerColor: primary,
+                      key: key,
+                      onSubmit: () async {
+                        BlocProvider.of<IsSelectedCubit>(context).chengeSelected(true);
+                        Future.delayed(
+                          const Duration(seconds: 5),
+                          () => BlocProvider.of<IsSelectedCubit>(context).chengeSelected(false),
+                        );
 
-                          if (User.lat != 0) {
+                        if (User.lat != 0) {
+                          _getLocation();
+
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .where('id', isEqualTo: User.employeeId)
+                              .get();
+
+                          DocumentSnapshot snap2 = await FirebaseFirestore.instance
+                              .collection("Employee")
+                              .doc(snap.docs[0].id)
+                              .collection("Record")
+                              .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                              .get();
+
+                          try {
+                            String checkIn = snap2['checkIn'];
+
+                            setState(() {
+                              checkOut = DateFormat('hh:mm').format(DateTime.now());
+                            });
+
+                            await FirebaseFirestore.instance
+                                .collection("Employee")
+                                .doc(snap.docs[0].id)
+                                .collection("Record")
+                                .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                .update({
+                              'date': Timestamp.now(),
+                              'checkIn': checkIn,
+                              'checkOut': DateFormat('hh:mm').format(DateTime.now()),
+                              'checkInLocation': location,
+                            });
+
+                            // Calculate core hours and update Firestore
+                            await calculateAndSaveCoreHours();
+                          } catch (e) {
+                            setState(() {
+                              checkIn = DateFormat('hh:mm').format(DateTime.now());
+                            });
+
+                            await FirebaseFirestore.instance
+                                .collection("Employee")
+                                .doc(snap.docs[0].id)
+                                .collection("Record")
+                                .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
+                                .set({
+                              'date': Timestamp.now(),
+                              'checkIn': DateFormat('hh:mm').format(DateTime.now()),
+                              'checkOut': "--/--",
+                              'checkOutLocation': location,
+                            });
+
+                            // Calculate core hours and update Firestore
+                            await calculateAndSaveCoreHours();
+                          }
+
+                          key.currentState!.reset();
+                        } else {
+                          Timer(const Duration(seconds: 3), () async {
                             _getLocation();
 
-                            QuerySnapshot snap = await FirebaseFirestore
-                                .instance
+                            QuerySnapshot snap = await FirebaseFirestore.instance
                                 .collection("Employee")
                                 .where('id', isEqualTo: User.employeeId)
                                 .get();
 
-                            DocumentSnapshot snap2 = await FirebaseFirestore
-                                .instance
+                            DocumentSnapshot snap2 = await FirebaseFirestore.instance
                                 .collection("Employee")
                                 .doc(snap.docs[0].id)
                                 .collection("Record")
-                                .doc(DateFormat('dd MMMM yyyy')
-                                    .format(DateTime.now()))
+                                .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
                                 .get();
 
                             try {
                               String checkIn = snap2['checkIn'];
 
                               setState(() {
-                                checkOut =
-                                    DateFormat('hh:mm').format(DateTime.now());
+                                checkOut = DateFormat('hh:mm').format(DateTime.now());
                               });
 
                               await FirebaseFirestore.instance
                                   .collection("Employee")
                                   .doc(snap.docs[0].id)
                                   .collection("Record")
-                                  .doc(DateFormat('dd MMMM yyyy')
-                                      .format(DateTime.now()))
+                                  .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
                                   .update({
                                 'date': Timestamp.now(),
                                 'checkIn': checkIn,
-                                'checkOut':
-                                    DateFormat('hh:mm').format(DateTime.now()),
+                                'checkOut': DateFormat('hh:mm').format(DateTime.now()),
                                 'checkInLocation': location,
                               });
+
+                              // Calculate core hours and update Firestore
+                              await calculateAndSaveCoreHours();
                             } catch (e) {
                               setState(() {
-                                checkIn =
-                                    DateFormat('hh:mm').format(DateTime.now());
+                                checkIn = DateFormat('hh:mm').format(DateTime.now());
                               });
 
                               await FirebaseFirestore.instance
                                   .collection("Employee")
                                   .doc(snap.docs[0].id)
                                   .collection("Record")
-                                  .doc(DateFormat('dd MMMM yyyy')
-                                      .format(DateTime.now()))
+                                  .doc(DateFormat('dd MMMM yyyy').format(DateTime.now()))
                                   .set({
                                 'date': Timestamp.now(),
-                                'checkIn':
-                                    DateFormat('hh:mm').format(DateTime.now()),
+                                'checkIn': DateFormat('hh:mm').format(DateTime.now()),
                                 'checkOut': "--/--",
                                 'checkOutLocation': location,
                               });
+
+                              // Calculate core hours and update Firestore
+                              await calculateAndSaveCoreHours();
                             }
 
                             key.currentState!.reset();
-                          } else {
-                            Timer(const Duration(seconds: 3), () async {
-                              _getLocation();
-
-                              QuerySnapshot snap = await FirebaseFirestore
-                                  .instance
-                                  .collection("Employee")
-                                  .where('id', isEqualTo: User.employeeId)
-                                  .get();
-
-                              DocumentSnapshot snap2 = await FirebaseFirestore
-                                  .instance
-                                  .collection("Employee")
-                                  .doc(snap.docs[0].id)
-                                  .collection("Record")
-                                  .doc(DateFormat('dd MMMM yyyy')
-                                      .format(DateTime.now()))
-                                  .get();
-
-                              try {
-                                String checkIn = snap2['checkIn'];
-
-                                setState(() {
-                                  checkOut = DateFormat('hh:mm')
-                                      .format(DateTime.now());
-                                });
-
-                                await FirebaseFirestore.instance
-                                    .collection("Employee")
-                                    .doc(snap.docs[0].id)
-                                    .collection("Record")
-                                    .doc(DateFormat('dd MMMM yyyy')
-                                        .format(DateTime.now()))
-                                    .update({
-                                  'date': Timestamp.now(),
-                                  'checkIn': checkIn,
-                                  'checkOut': DateFormat('hh:mm')
-                                      .format(DateTime.now()),
-                                  'checkInLocation': location,
-                                });
-                              } catch (e) {
-                                setState(() {
-                                  checkIn = DateFormat('hh:mm')
-                                      .format(DateTime.now());
-                                });
-
-                                await FirebaseFirestore.instance
-                                    .collection("Employee")
-                                    .doc(snap.docs[0].id)
-                                    .collection("Record")
-                                    .doc(DateFormat('dd MMMM yyyy')
-                                        .format(DateTime.now()))
-                                    .set({
-                                  'date': Timestamp.now(),
-                                  'checkIn': DateFormat('hh:mm')
-                                      .format(DateTime.now()),
-                                  'checkOut': "--/--",
-                                  'checkOutLocation': location,
-                                });
-                              }
-
-                              key.currentState!.reset();
-                            });
-                          }
-                        },
-                      );
+                          });
+                        }
+                      },
+                    );
                     },
                   ),
                 )

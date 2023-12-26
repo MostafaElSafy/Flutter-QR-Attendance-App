@@ -350,6 +350,36 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "local_auth",
+      "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth-2.1.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_android",
+      "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_android-1.0.36",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_ios",
+      "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_ios-1.1.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_platform_interface",
+      "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_platform_interface-1.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "local_auth_windows",
+      "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_windows-1.0.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "location",
       "rootUri": "file:///C:/Users/Mohamed/AppData/Local/Pub/Cache/hosted/pub.dev/location-5.0.3",
       "packageUri": "lib/",
@@ -572,7 +602,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2023-12-24T17:56:23.384690Z",
+  "generated": "2023-12-25T15:20:01.161261Z",
   "generator": "pub",
   "generatorVersion": "3.1.2"
 }

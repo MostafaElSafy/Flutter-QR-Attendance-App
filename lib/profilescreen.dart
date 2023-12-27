@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:attendancesys/loginscreen.dart';
 import 'package:attendancesys/model/user.dart' as LocalUser;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseUser;
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,29 +30,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void pickUploadProfilePic() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      maxHeight: 512,
-      maxWidth: 512,
+      // maxHeight: 512,
+      // maxWidth: 512,
       imageQuality: 90,
     );
 
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("${LocalUser.User.employeeId.toLowerCase()}_profilepic.jpg");
+    if (image != null) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("${LocalUser.User.employeeId.toLowerCase()}_profilepic.jpg");
+      try {
+        await ref.putFile(File(image.path));
+      } catch (e) {
+        print(e);
+      }
 
-    await ref.putFile(File(image!.path));
-
-    ref.getDownloadURL().then((value) async {
-      setState(() {
-        LocalUser.User.profilePicLink = value;
-      });
+      String downloadURL = await ref.getDownloadURL();
 
       await FirebaseFirestore.instance
           .collection("Employee")
           .doc(LocalUser.User.id)
           .update({
-        'profilePic': value,
+        'profilePic': downloadURL,
       });
-    });
+
+      setState(() {
+        LocalUser.User.profilePicLink = downloadURL;
+      });
+    }
   }
 
   late BuildContext scaffoldContext; // Add this line
@@ -73,27 +79,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: Container(
                 margin: const EdgeInsets.only(top: 80, bottom: 24),
+                padding: const EdgeInsets.all(2),
                 height: 120,
                 width: 120,
-                alignment: Alignment.center,
+                // alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: primary,
                 ),
-                child: Center(
-                  child: LocalUser.User.profilePicLink == " "
-                      ? const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 80,
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(LocalUser.User.profilePicLink),
+                // child:
+                //  Center(
+                child: LocalUser.User.profilePicLink == " "
+                    ? const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 80,
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: LocalUser.User.profilePicLink,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Center(
+                            child: CircularProgressIndicator(
+                                value: downloadProgress.progress),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
                         ),
-                ),
+                      ),
               ),
             ),
+            // ),
             Align(
               alignment: Alignment.center,
               child: Text(

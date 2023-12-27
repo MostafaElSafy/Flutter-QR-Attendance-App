@@ -52,6 +52,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   another_flushbar: ^1.12.30
   flutter_bloc:
+  firebase_auth: ^4.15.3
 
 dev_dependencies:
   flutter_test:

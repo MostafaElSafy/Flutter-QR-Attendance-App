@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "_flutterfire_internals",
-      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/_flutterfire_internals-1.3.14",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/_flutterfire_internals-1.3.16",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -30,6 +30,24 @@
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "cached_network_image",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image-3.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_platform_interface",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_platform_interface-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "cached_network_image_web",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_web-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "characters",
@@ -72,6 +90,12 @@
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.3+7",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "crypto",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "cupertino_icons",
@@ -122,8 +146,26 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "firebase_auth",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth-4.15.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_auth_platform_interface",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_platform_interface-7.0.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_auth_web",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_web-5.8.12",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "firebase_core",
-      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.24.0",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.24.2",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -135,7 +177,7 @@
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.9.0",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.10.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -174,6 +216,12 @@
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_bloc-8.1.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_cache_manager",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "flutter_keyboard_visibility",
@@ -350,6 +398,36 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "local_auth",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth-2.1.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_android",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_android-1.0.36",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_ios",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_ios-1.1.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "local_auth_platform_interface",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_platform_interface-1.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "local_auth_windows",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_windows-1.0.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "location",
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/location-5.0.3",
       "packageUri": "lib/",
@@ -404,10 +482,34 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "octo_image",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/octo_image-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.8.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "path_provider",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "path_provider_android",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "path_provider_foundation",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "path_provider_linux",
@@ -442,6 +544,12 @@
     {
       "name": "provider",
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "rxdart",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/rxdart-0.27.7",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -506,6 +614,24 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "sprintf",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/sprintf-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sqflite",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "sqflite_common",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/sqflite_common-2.5.0+2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "stack_trace",
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/stack_trace-1.11.0",
       "packageUri": "lib/",
@@ -524,6 +650,12 @@
       "languageVersion": "2.18"
     },
     {
+      "name": "synchronized",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.1.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "term_glyph",
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.1",
       "packageUri": "lib/",
@@ -540,6 +672,12 @@
       "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.3.2",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "uuid",
+      "rootUri": "file:///C:/Users/Eye/AppData/Local/Pub/Cache/hosted/pub.dev/uuid-4.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
     },
     {
       "name": "vector_math",
@@ -572,7 +710,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-01-07T14:39:46.486042Z",
+  "generated": "2024-01-07T14:45:06.221188Z",
   "generator": "pub",
   "generatorVersion": "3.1.3"
 }

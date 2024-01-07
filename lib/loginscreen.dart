@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:attendancesys/homescreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,9 +25,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late SharedPreferences sharedPreferences;
 
+  bool isBiometric = false;
+
+  Future<bool> authentificateWithBiometric() async {
+    final LocalAuthentication localAuthentication = LocalAuthentication();
+    final bool isBiometricSupported =
+        await localAuthentication.isDeviceSupported();
+    final bool canCheckBiometrics =
+        await localAuthentication.canCheckBiometrics;
+
+    bool isAuthentificated = false;
+
+    if (isBiometricSupported && canCheckBiometrics) {
+      isAuthentificated = await localAuthentication.authenticate(
+          localizedReason: "please complete the biometric to proceed");
+    }
+
+    return isAuthentificated;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isKeyboardVisible = KeyboardVisibilityProvider.isKeyboardVisible(context);
+    final bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
@@ -32,23 +55,27 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
-          isKeyboardVisible ? SizedBox(height: screenHeight / 16,) : Container(
-            height: screenHeight / 2.5,
-            width: screenWidth,
-            decoration: BoxDecoration(
-              color: primary,
-              borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(70),
-              ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: screenWidth / 5,
-              ),
-            ),
-          ),
+          isKeyboardVisible
+              ? SizedBox(
+                  height: screenHeight / 16,
+                )
+              : Container(
+                  height: screenHeight / 2.5,
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    color: primary,
+                    borderRadius: const BorderRadius.only(
+                      bottomRight: Radius.circular(70),
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: screenWidth / 5,
+                    ),
+                  ),
+                ),
           Container(
             margin: EdgeInsets.only(
               top: screenHeight / 15,
@@ -80,36 +107,44 @@ class _LoginScreenState extends State<LoginScreen> {
                     String id = idController.text.trim();
                     String password = passController.text.trim();
 
-                    if(id.isEmpty) {
+                    if (id.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Employee id is still empty!"),
                       ));
-                    } else if(password.isEmpty) {
+                    } else if (password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Password is still empty!"),
                       ));
                     } else {
                       QuerySnapshot snap = await FirebaseFirestore.instance
-                          .collection("Employee").where('id', isEqualTo: id).get();
+                          .collection("Employee")
+                          .where('id', isEqualTo: id)
+                          .get();
 
                       try {
-                        if(password == snap.docs[0]['password']) {
-                          sharedPreferences = await SharedPreferences.getInstance();
+                        if (password == snap.docs[0]['password']) {
+                          sharedPreferences =
+                              await SharedPreferences.getInstance();
 
-                          sharedPreferences.setString('employeeId', id).then((_) {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) => HomeScreen())
-                            );
+                          sharedPreferences
+                              .setString('employeeId', id)
+                              .then((_) {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
                           });
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content: Text("Password is not correct!"),
                           ));
                         }
-                      } catch(e) {
+                      } catch (e) {
                         String error = " ";
 
-                        if(e.toString() == "RangeError (index): Invalid value: Valid value range is empty: 0") {
+                        if (e.toString() ==
+                            "RangeError (index): Invalid value: Valid value range is empty: 0") {
                           setState(() {
                             error = "Employee id does not exist!";
                           });
@@ -145,7 +180,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
+                Center(
+                    child: GestureDetector(
+                  onTap: () async {
+                    isBiometric = await authentificateWithBiometric();
+                    if (isBiometric) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Wrong Fingerprint!"),
+                      ));
+                    }
+                  },
+                  child: Container(
+                    height: 60,
+                    width: screenWidth,
+                    margin: EdgeInsets.only(top: screenHeight / 40),
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Fingerprint Login",
+                        style: TextStyle(
+                          fontFamily: "NexaBold",
+                          fontSize: screenWidth / 26,
+                          color: Colors.white,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ))
               ],
             ),
           ),
@@ -167,7 +239,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget customField(String hint, TextEditingController controller, bool obscure) {
+  Widget customField(
+      String hint, TextEditingController controller, bool obscure) {
     return Container(
       width: screenWidth,
       margin: EdgeInsets.only(bottom: 12),
@@ -215,5 +288,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
 }

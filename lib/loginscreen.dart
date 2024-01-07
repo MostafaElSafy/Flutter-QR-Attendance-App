@@ -182,8 +182,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Center(
-                    child: ElevatedButton(
-                  onPressed: () async {
+                    child: GestureDetector(
+                  onTap: () async {
                     isBiometric = await authentificateWithBiometric();
                     if (isBiometric) {
                       Navigator.push(
@@ -197,7 +197,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       ));
                     }
                   },
-                  child: const Text("check biometric"),
+                  child: Container(
+                    height: 60,
+                    width: screenWidth,
+                    margin: EdgeInsets.only(top: screenHeight / 40),
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Fingerprint Login",
+                        style: TextStyle(
+                          fontFamily: "NexaBold",
+                          fontSize: screenWidth / 26,
+                          color: Colors.white,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ),
+                  ),
                 ))
               ],
             ),
